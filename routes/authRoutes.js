@@ -19,26 +19,26 @@ router.post('/register', authController.register);
 // Logout functionality
 router.post('/logout', authController.logout);
 
+// Profile route (requires user to be authenticated)
 router.get('/profile', (req, res) => {
-    console.log(req.session)
-
     if (req.session.user) {
-        profileController.getProfile(req, res); // Call profile controller
+        profileController.getProfile(req, res);
     } else {
-        res.redirect('/login'); // If not logged in, redirect to login
+        res.redirect('/login');
     }
 });
 
 // Edit profile page route
 router.get('/edit-profile', (req, res) => {
     if (req.session.user) {
-        res.render('edit-profile', { user: req.session.user }); // Pass user info to render page
+        res.render('edit-profile', { user: req.session.user });
     } else {
-        res.redirect('/login'); // If not logged in, redirect to login
+        res.redirect('/login');
     }
 });
 
 // Handle edit profile form submission
 router.post('/edit-profile', editProfileController.updateProfile);
+
 
 module.exports = router;

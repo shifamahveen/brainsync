@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - User List</title>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CDN -->
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md">
+        <div class="container flex items-center justify-between px-6 py-4 mx-auto">
+            <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
+            <div class="space-x-4">
+                <a href="/index" class="text-gray-800 hover:text-teal-600">Home</a>
+                <a href="/profile" class="text-gray-800 hover:text-teal-600">Profile</a>
+                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin/users" class="text-blue-800 hover:text-teal-600">User List</a>
+                <% } %>
+                <a href="/logout" class="text-gray-800 hover:text-teal-600">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container px-6 py-8 mx-auto mt-24">
+        <h1 class="mb-6 text-3xl font-bold text-teal-600">User List</h1>
+        
+        <!-- Table Wrapper -->
+        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+            <table class="w-full border border-collapse border-gray-200 table-auto">
+                <thead class="text-white bg-teal-600">
+                    <tr>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">ID</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Username</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Email</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Location</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Mobile Number</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Gender</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Role</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-800">
+                    <% users.forEach(user => { %>
+                    <tr class="transition duration-300 ease-in-out hover:bg-teal-100">
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.id %></td>
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.username %></td>
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.email %></td>
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.location %></td>
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.phone %></td>
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.gender %></td>
+                        <td class="px-6 py-4 text-sm font-medium border-b border-gray-300"><%= user.role %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

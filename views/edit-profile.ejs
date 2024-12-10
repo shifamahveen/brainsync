@@ -14,8 +14,12 @@
         <div class="container flex items-center justify-between px-6 py-4 mx-auto">
             <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
             <div class="space-x-4">
-                <a href="/" class="text-gray-800 hover:text-teal-600">Home</a>
+                <a href="/index" class="text-gray-800 hover:text-teal-600">Home</a>
                 <a href="/profile" class="text-gray-800 hover:text-teal-600">Profile</a>
+                <a href="/edit-profile" class="text-blue-800 hover:text-blue-200">Settings</a>
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin/users" class="text-gray-800 hover:text-teal-600">User List</a>
+                <% } %>
                 <a href="/logout" class="text-gray-800 hover:text-teal-600">Logout</a>
             </div>
         </div>

@@ -1,13 +1,17 @@
 const express = require('express');
+const { chatController } = require('../controllers/chatController');
+const isAuthenticated = require('../middleware/authMiddleware'); // Ensure authentication middleware is applied
+
 const router = express.Router();
 
-// Home page route (redirect to login if user is not logged in)
-router.get('/', (req, res) => {
-    if (req.session.user) {
-        res.render('index', { user: req.session.user }); // Show the home page if logged in
-    } else {
-        res.redirect('/login'); // Otherwise, redirect to the login page
-    }
+router.get('/index', isAuthenticated, (req, res) => {
+    res.render('index', { 
+        response: '', 
+        user: req.session.user || null // Pass user from session, or null if not available
+    });
 });
+
+router.post('/index', isAuthenticated, chatController);
+
 
 module.exports = router;

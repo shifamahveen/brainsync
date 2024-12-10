@@ -13,19 +13,25 @@
         <div class="container flex items-center justify-between px-6 py-4 mx-auto">
             <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
             <div class="space-x-4">
-                <a href="/" class="text-gray-800 hover:text-teal-600">Home</a>
+                <a href="/index" class="text-blue-800 hover:text-teal-600">Home</a>
                 <a href="/profile" class="text-gray-800 hover:text-teal-600">Profile</a>
+                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
+                <% if (user && user.role === 'admin') { %>
+                    <a href="/admin/users" class="text-gray-800 hover:text-teal-600">User List</a>
+                <% } %>
                 <a href="/logout" class="text-gray-800 hover:text-teal-600">Logout</a>
             </div>
         </div>
     </nav>
+    
 
+    
     <!-- Page Content -->
     <div class="flex flex-col items-center justify-center w-full mt-16">
         <h1 class="mb-10 text-5xl font-extrabold text-white">BrainSync Assistant</h1>
 
         <!-- Form for input -->
-        <form action="/index/" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-xl">
+        <form action="/index" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-xl">
             <div>
                 <label for="userInput" class="text-xl font-semibold text-gray-800">Your Question:</label>
                 <input type="text" id="userInput" name="userInput" required class="w-full p-4 mt-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Enter your question...">

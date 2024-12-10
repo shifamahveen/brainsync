@@ -59,32 +59,47 @@ exports.register = async (req, res) => {
 };
 
 // Login user
-exports.login = async (req, res) => {
+exports.login = (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password);
-    try {
-        // Validate user email and password here (you may hash password before comparing)
-        const user = await userModel.findOne({ email });
-        
-        if (!user || !user.comparePassword(password)) {
-            // Handle login error
-            return res.status(400).send("Invalid credentials");
+
+    // Input validation
+    if (!email || !password) {
+        console.error("Invalid or empty user input");
+        return res.redirect('/login?error=Please provide both email and password');
+    }
+
+    userModel.getUserByEmail(email, (err, user) => {
+        if (err || !user) {
+            return res.redirect('/login?error=Invalid email or password');
         }
 
-        // Set the session after successful login
+        // Verify the password
+        const passwordMatch = bcrypt.compareSync(password, user.password);
+        if (!passwordMatch) {
+            console.error("Invalid credentials");
+            return res.redirect('/login?error=Invalid email or password');
+        }
+
+        // Set session details on successful login
         req.session.user = {
+            id: user.id,
             username: user.username,
+            role: user.role,
             email: user.email,
-            role: user.role
+            phone: user.phone,
         };
-        console.log(req.session);
-        // Redirect to the index page (Home page)
-        res.redirect('/index');  // or simply '/ if it's the home route
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server error");
-    }
+
+        req.session.save((err) => {
+            if (err) {
+                console.error("Error saving session:", err);
+                return res.redirect('/login?error=Session save failed');
+            }
+            console.log(user);
+            res.redirect('/index'); // Redirect to the index page
+        });
+    });
 };
+
 
 // Logout user
 exports.logout = (req, res) => {

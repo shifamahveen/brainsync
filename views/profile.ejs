@@ -7,15 +7,20 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex flex-col min-h-screen font-sans bg-gradient-to-r from-blue-100 via-green-100 to-pink-100">
+<body class="flex flex-col min-h-screen font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 z-10 w-full p-4 bg-blue-600">
-        <div class="flex items-center justify-between max-w-6xl mx-auto text-white">
-            <a href="/" class="text-2xl font-semibold">StoryGen</a>
-            <div class="space-x-6">
-                <a href="/" class="hover:text-blue-200">Home</a>
-                <a href="/login" class="hover:text-blue-200">Logout</a>
+    <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md">
+        <div class="container flex items-center justify-between px-6 py-4 mx-auto">
+            <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
+            <div class="space-x-4">
+                <a href="/index" class="text-gray-800 hover:text-teal-600">Home</a>
+                <a href="/profile" class="text-blue-800 hover:text-teal-600">Profile</a>
+                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin/users" class="text-gray-800 hover:text-teal-600">User List</a>
+                <% } %>
+                <a href="/logout" class="text-gray-800 hover:text-teal-600">Logout</a>
             </div>
         </div>
     </nav>
