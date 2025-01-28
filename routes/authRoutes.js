@@ -4,49 +4,41 @@ const authController = require('../controllers/authController');
 const profileController = require('../controllers/profileController');
 const editProfileController = require('../controllers/editProfileController');
 
-// Login Page
-router.get('/login', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/home'); // Redirect to home if logged in
-    }
-    const error = req.query.error || null;
-    res.render('login', { error }); // Render login page with error if provided
-});
+// Serve login page
+router.get('/login', (req, res) => res.render('login'));
 
-// Handle Login
+// Handle login
 router.post('/login', authController.login);
 
-// Registration Page
-router.get('/register', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/home'); // Redirect to home if logged in
-    }
-    res.render('register'); // Render registration page
-});
+// Serve register page
+router.get('/register', (req, res) => res.render('register'));
 
-// Handle Registration
+// Handle registration
 router.post('/register', authController.register);
 
-// Logout
-router.get('/logout', authController.logout);
+// Logout user
+router.post('/logout', authController.logout);
 
-// Profile Page (Protected)
+// Profile route (requires user to be authenticated)
 router.get('/profile', (req, res) => {
     if (req.session.user) {
-        return profileController.getProfile(req, res);
+        profileController.getProfile(req, res);
+    } else {
+        res.redirect('/login');
     }
-    res.redirect('/auth/login?error=You%20need%20to%20log%20in%20to%20access%20this%20page');
 });
 
-// Edit Profile Page (Protected)
+// Edit profile page route
 router.get('/edit-profile', (req, res) => {
     if (req.session.user) {
-        return res.render('edit-profile', { user: req.session.user });
+        res.render('edit-profile', { user: req.session.user });
+    } else {
+        res.redirect('/login');
     }
-    res.redirect('/auth/login?error=You%20need%20to%20log%20in%20to%20access%20this%20page');
 });
 
-// Handle Edit Profile Form
+// Handle edit profile form submission
 router.post('/edit-profile', editProfileController.updateProfile);
+
 
 module.exports = router;
