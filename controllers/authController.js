@@ -36,10 +36,9 @@ exports.login = async (req, res) => {
     }
 
     try {
-        // Fetch user from database
+        // Fetch user from the database
         userModel.getUserByEmail(email, (err, user) => {
             if (err || !user) {
-                console.error('Login error:', err || 'User not found');
                 return res.redirect('/login?error=Invalid email or password');
             }
 
@@ -49,11 +48,11 @@ exports.login = async (req, res) => {
                 return res.redirect('/login?error=Invalid email or password');
             }
 
-            // Store user info in session
+            // Store user information in the session
             req.session.user = {
                 id: user.id,
                 username: user.username,
-                role: user.role,
+                role: user.role, // Ensure role is set as 'admin' for admin users
                 email: user.email,
                 phone: user.phone,
             };
@@ -61,10 +60,9 @@ exports.login = async (req, res) => {
             // Save session and redirect to the dashboard
             req.session.save((err) => {
                 if (err) {
-                    console.error('Session save error:', err);
                     return res.redirect('/login?error=Session save failed');
                 }
-                res.redirect('/index');
+                res.redirect('/index'); // Redirect to the index page or admin dashboard
             });
         });
     } catch (error) {

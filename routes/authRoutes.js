@@ -40,5 +40,4 @@ router.get('/edit-profile', (req, res) => {
 // Handle edit profile form submission
 router.post('/edit-profile', editProfileController.updateProfile);
 
-
 module.exports = router;
