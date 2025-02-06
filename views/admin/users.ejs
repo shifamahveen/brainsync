@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - User List</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x" defer></script> <!-- AlpineJS for reactivity -->
+    <script>
+        // Sorting function for table columns
+        function sortTable(n) {
+            const table = document.getElementById("userTable");
+            const rows = Array.from(table.rows).slice(1); // Get all rows except header
+            const isAscending = table.getAttribute("data-sort") === "asc";
+            const sortedRows = rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[n].innerText;
+                const cellB = rowB.cells[n].innerText;
+
+                return isAscending
+                    ? cellA.localeCompare(cellB)
+                    : cellB.localeCompare(cellA);
+            });
+
+            table.setAttribute("data-sort", isAscending ? "desc" : "asc");
+            table.append(...sortedRows); // Append sorted rows
+        }
+
+        // Search functionality for filtering the user list
+        function searchUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#userTable tbody tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+    </script>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
 
@@ -28,18 +59,21 @@
     <div class="container px-6 py-8 mx-auto mt-24">
         <h1 class="mb-6 text-3xl font-bold text-teal-600">User List</h1>
         
+        <!-- Search Bar -->
+        <input type="text" id="searchInput" oninput="searchUsers()" placeholder="Search by name, email, etc..." class="w-full max-w-xs p-2 mb-4 border border-gray-300 rounded-md">
+
         <!-- Table Wrapper -->
         <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table class="w-full border border-collapse border-gray-200 table-auto">
+            <table id="userTable" class="w-full border border-collapse border-gray-200 table-auto" data-sort="asc">
                 <thead class="text-white bg-teal-600">
                     <tr>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">ID</th>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Username</th>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Email</th>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Location</th>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Mobile Number</th>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Gender</th>
-                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300">Role</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(0)">ID</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(1)">Username</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(2)">Email</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(3)">Location</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(4)">Mobile Number</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(5)">Gender</th>
+                        <th class="px-6 py-4 text-sm font-medium text-left border-b border-gray-300 cursor-pointer" onclick="sortTable(6)">Role</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-800">
@@ -57,6 +91,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 
 </body>
