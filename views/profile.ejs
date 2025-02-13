@@ -3,71 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Profile</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>WanderMind App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script> 
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
-<body class="flex flex-col min-h-screen font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
+<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md">
         <div class="container flex items-center justify-between px-6 py-4 mx-auto">
-            <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
-            <div class="space-x-4">
-                <a href="/index" class="text-gray-800 hover:text-teal-600">Home</a>
-                <a href="/profile" class="text-blue-800 hover:text-teal-600">Profile</a>
-                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
-                <% if (user.role === 'admin') { %>
-                    <a href="/admin/users" class="text-gray-800 hover:text-teal-600">User List</a>
+            <h1 class="flex items-center text-2xl font-bold text-teal-600">
+                <i data-lucide="compass" class="w-7 h-7 mr-2 text-indigo-600"></i> WanderMind
+            </h1>
+            <div class="flex space-x-6">
+                <a href="/" class="flex items-center text-blue-800 hover:text-teal-600">
+                    <i data-lucide="home" class="w-6 h-6 mr-1"></i> Home
+                </a>
+                <a href="/profile" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="user" class="w-6 h-6 mr-1"></i> Profile
+                </a>
+                <a href="/edit-profile" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="settings" class="w-6 h-6 mr-1"></i> Settings
+                </a>
+                <a href="/about" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="info" class="w-6 h-6 mr-1"></i> About
+                </a>
+                <% if (user && user.role === 'admin') { %>
+                    <a href="/admin/users" class="flex items-center text-gray-800 hover:text-teal-600">
+                        <i data-lucide="users" class="w-6 h-6 mr-1"></i> User List
+                    </a>
                 <% } %>
-                <a href="/login" class="text-gray-800 hover:text-teal-600">Logout</a>
+                <a href="/login" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="log-out" class="w-6 h-6 mr-1"></i> Logout
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Profile container -->
+    <!-- Profile Container -->
     <div class="flex flex-col items-center justify-center w-full h-full mt-24">
         <div class="w-full max-w-3xl p-8 bg-white border-2 border-gray-200 shadow-2xl rounded-2xl">
 
-            <!-- Profile Heading -->
-            <h1 class="mb-6 text-4xl font-bold text-center text-transparent bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text">
-                Your Profile
-            </h1>
-
-            <!-- Profile details -->
-            <div class="space-y-4">
-                <div class="text-xl text-gray-700">
-                    <strong>Username:</strong> <span class="font-medium"><%= user.username %></span>
-                </div>
-                <div class="text-xl text-gray-700">
-                    <strong>Email:</strong> <span class="font-medium"><%= user.email %></span>
-                </div>
-                <div class="text-xl text-gray-700">
-                    <strong>Phone:</strong> <span class="font-medium"><%= user.phone %></span>
-                </div>
-                <div class="text-xl text-gray-700">
-                    <strong>Location:</strong> <span class="font-medium"><%= user.location %></span>
-                </div>
-                <div class="text-xl text-gray-700">
-                    <strong>Gender:</strong> <span class="font-medium"><%= user.gender %></span>
-                </div>
-
-                <!-- Role Specific Content -->
-                <% if (user.role === 'admin') { %>
-                    <div class="text-xl text-gray-700">
-                        <strong>Admin Panel Access:</strong> <span class="font-medium">Yes</span>
-                    </div>
-                <% } else { %>
-                    <div class="text-xl text-gray-700">
-                        <strong>Role:</strong> <span class="font-medium"><%= user.role %></span>
-                    </div>
-                <% } %>
+            <!-- Avatar Selection -->
+            <div class="flex justify-center">
+                <img id="avatar" class="w-24 h-24 rounded-full shadow-lg" alt="User Avatar">
             </div>
 
-            
+            <!-- Profile Heading -->
+            <h1 class="mt-4 text-3xl font-bold text-center text-transparent bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text">
+                <%= user.username %>'s Profile
+            </h1>
+
+            <!-- User Details -->
+            <div class="mt-6 space-y-4">
+                <div class="flex items-center p-4 bg-gray-100 rounded-lg shadow hover:bg-gray-200">
+                    <i data-lucide="mail" class="w-6 h-6 mr-2"></i>
+                    <p class="text-lg font-medium text-gray-700"><strong>Email:</strong> <%= user.email %></p>
+                </div>
+                <div class="flex items-center p-4 bg-gray-100 rounded-lg shadow hover:bg-gray-200">
+                    <i data-lucide="phone" class="w-6 h-6 mr-2"></i>
+                    <p class="text-lg font-medium text-gray-700"><strong>Phone:</strong> <%= user.phone %></p>
+                </div>
+                <div class="flex items-center p-4 bg-gray-100 rounded-lg shadow hover:bg-gray-200">
+                    <i data-lucide="map-pin" class="w-6 h-6 mr-2"></i>
+                    <p class="text-lg font-medium text-gray-700"><strong>Location:</strong> <%= user.location %></p>
+                </div>
+                <div class="flex items-center p-4 bg-gray-100 rounded-lg shadow hover:bg-gray-200">
+                    <i data-lucide="user-check" class="w-6 h-6 mr-2"></i>
+                    <p class="text-lg font-medium text-gray-700"><strong>Gender:</strong> <%= user.gender %></p>
+                </div>
+            </div>
 
         </div>
     </div>
+
+    <!-- JavaScript Initialization -->
+    <script>
+        // Ensure Lucide icons render
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+    
+        // Get user gender from server-side variable
+        const gender = "<%= user.gender %>".toLowerCase(); 
+    
+        // Avatar selection based on gender
+        const avatar = document.getElementById("avatar");
+    
+        if (gender === "male") {
+            avatar.src = "https://cdn-icons-png.flaticon.com/512/1998/1998612.png";
+        } else if (gender === "female") {
+            avatar.src = "https://cdn-icons-png.flaticon.com/512/1998/1998592.png";
+        } else {
+            avatar.src = "https://cdn-icons-png.flaticon.com/512/1998/1998622.png";
+        }
+    </script>
 
 </body>
 </html>

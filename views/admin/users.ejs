@@ -6,6 +6,8 @@
     <title>Admin - User List</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CDN -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x" defer></script> <!-- AlpineJS for reactivity -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> <!-- Lucide Icons -->
     <script>
         // Sorting function for table columns
         function sortTable(n) {
@@ -42,15 +44,27 @@
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md">
         <div class="container flex items-center justify-between px-6 py-4 mx-auto">
-            <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
-            <div class="space-x-4">
-                <a href="/index" class="text-gray-800 hover:text-teal-600">Home</a>
-                <a href="/profile" class="text-gray-800 hover:text-teal-600">Profile</a>
-                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
+            <h1 class="flex items-center text-2xl font-bold text-teal-600">
+                <i data-lucide="compass" class="w-7 h-7 mr-2 text-indigo-600"></i> WanderMind
+            </h1>
+            <div class="flex space-x-6">
+                <a href="/index" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="home" class="w-6 h-6 mr-1"></i> Home
+                </a>
+                <a href="/profile" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="user" class="w-6 h-6 mr-1"></i> Profile
+                </a>
+                <a href="/edit-profile" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="settings" class="w-6 h-6 mr-1"></i> Settings
+                </a>
                 <% if (user.role === 'admin') { %>
-                    <a href="/admin/users" class="text-blue-800 hover:text-teal-600">User List</a>
+                    <a href="/admin/users" class="flex items-center text-blue-800 hover:text-teal-600">
+                        <i data-lucide="users" class="w-6 h-6 mr-1"></i> User List
+                    </a>
                 <% } %>
-                <a href="/login" class="text-gray-800 hover:text-teal-600">Logout</a>
+                <a href="/login" class="flex items-center text-gray-800 hover:text-red-500">
+                    <i data-lucide="log-out" class="w-6 h-6 mr-1"></i> Logout
+                </a>
             </div>
         </div>
     </nav>
@@ -94,5 +108,11 @@
 
     </div>
 
+    <!-- Lucide Icons Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

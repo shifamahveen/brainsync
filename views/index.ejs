@@ -3,50 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrainSync App</title>
+    <title>WanderMind App</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CDN -->
+    <script src="https://kit.fontawesome.com/YOUR_KIT_ID.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .transport-option {
+            @apply flex items-center justify-center w-1/2 py-3 text-white rounded-md transition-transform duration-300;
+        }
+        .transport-option.selected {
+            @apply ring-2 ring-teal-500 scale-105;
+        }
+        body {
+            background: url('https://img.freepik.com/free-vector/realistic-travel-background-with-elements_52683-77784.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
+<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-opacity-80 fade-in">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md">
+    <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md bg-opacity-90">
         <div class="container flex items-center justify-between px-6 py-4 mx-auto">
-            <h1 class="text-2xl font-bold text-teal-600">BrainSync</h1>
+            <h1 class="text-2xl font-bold text-teal-600 flex items-center">
+                <i class="fa-solid fa-brain mr-2" style="color: #FF5733;"></i> WanderMind
+            </h1>
             <div class="space-x-4">
-                <a href="/index" class="text-blue-800 hover:text-teal-600">Home</a>
-                <a href="/profile" class="text-gray-800 hover:text-teal-600">Profile</a>
-                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
+                <a href="/index" class="text-blue-800 hover:text-teal-600 transition duration-300"><i class="fa-solid fa-house mr-1" style="color: #3498db;"></i> Home</a>
+                <a href="/profile" class="text-gray-800 hover:text-teal-600 transition duration-300"><i class="fa-solid fa-user mr-1" style="color: #2ecc71;"></i> Profile</a>
+                <a href="/edit-profile" class="text-gray-800 hover:text-teal-600 transition duration-300"><i class="fa-solid fa-gear mr-1" style="color: #f1c40f;"></i> Settings</a>
+                <a href="/about" class="text-gray-800 hover:text-teal-600 transition duration-300"><i class="fa-solid fa-gear mr-1" style="color: #f1c40f;"></i>About</a>
                 <% if (user && user.role === 'admin') { %>
-                    <a href="/admin/users" class="text-gray-800 hover:text-teal-600">User List</a>
+                    <a href="/admin/users" class="text-gray-800 hover:text-teal-600 transition duration-300"><i class="fa-solid fa-users mr-1" style="color: #9b59b6;"></i> User List</a>
                 <% } %>
-                <a href="/login" class="text-gray-800 hover:text-teal-600">Logout</a>
+                <a href="/login" class="text-gray-800 hover:text-teal-600 transition duration-300"><i class="fa-solid fa-right-from-bracket mr-1" style="color: #e74c3c;"></i> Logout</a>
             </div>
         </div>
     </nav>
     
-
-    
     <!-- Page Content -->
-    <div class="flex flex-col items-center justify-center w-full mt-16">
-        <h1 class="mb-10 text-5xl font-extrabold text-white">BrainSync Assistant</h1>
+    <div class="flex flex-col items-center justify-center w-full mt-16 fade-in">
+        <h1 class="mb-10 text-5xl font-extrabold text-white animate-bounce">WanderMind Assistant</h1>
 
         <!-- Form for input -->
-        <form action="/index" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-xl">
-            <div>
-                <label for="userInput" class="text-xl font-semibold text-gray-800">Your Question:</label>
-                <input type="text" id="userInput" name="userInput" required class="w-full p-4 mt-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Enter your question...">
-            </div>
-            <button type="submit" class="w-full py-3 text-white rounded-md bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-teal-500">Submit</button>
+        <form id="travelForm" action="/index" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white bg-opacity-90 rounded-lg shadow-xl transform hover:scale-105 transition duration-500">
+            
+                <div>
+                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-location-dot mr-2" style="color: #e67e22;"></i> Present Location:</label>
+                    <input type="text" id="presentLocation" name="presentLocation" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-map-location-dot mr-2" style="color: #1abc9c;"></i> Destination:</label>
+                    <input type="text" id="tourLocation" name="tourLocation" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-money-bill-wave mr-2" style="color: #27ae60;"></i> Budget (Rs):</label>
+                    <input type="number" id="budget" name="budget" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-calendar-days mr-2" style="color: #8e44ad;"></i> Number of Days:</label>
+                    <input type="number" id="days" name="days" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="text-xl font-semibold text-gray-800">
+                        <i class="fa-solid fa-bus mr-2" style="color: #c0392b;"></i> Transportation:
+                    </label>
+                    <div class="flex space-x-4 mt-2">
+                        <label class="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:scale-105 transition">
+                            <input type="radio" name="transport" value="public" required class="hidden" onclick="selectTransport('public')">
+                            <i class="fa-solid fa-bus"></i> Public
+                        </label>
+                        
+                        <label class="flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer hover:scale-105 transition">
+                            <input type="radio" name="transport" value="private" required class="hidden" onclick="selectTransport('private')">
+                            <i class="fa-solid fa-car"></i> Private
+                        </label>
+                    </div>
+                </div>
+                <button type="submit"  style="border: 1px solid black;" class="w-full py-3 text-blue-800 rounded-md bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-paper-plane mr-2" style="color: #f39c12;"></i> Submit
+                </button>
         </form>
-
-        <!-- Response Section -->
-        <div class="w-full max-w-lg mt-8">
-            <h2 class="mb-4 text-2xl font-semibold text-white">Response:</h2>
-            <div class="p-6 text-gray-800 bg-white rounded-lg shadow-xl">
-                <p><%= response %></p>
-            </div>  
-        </div>
     </div>
+
+    <script>
+        function selectTransport(type) {
+            document.getElementById('transport').value = type;
+            document.getElementById('publicBtn').classList.remove('selected');
+            document.getElementById('privateBtn').classList.remove('selected');
+            document.getElementById(type + 'Btn').classList.add('selected');
+        }
+    </script>
 
 </body>
 </html>

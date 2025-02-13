@@ -1,7 +1,13 @@
-const bcrypt = require('bcrypt');
-const userModel = require('../models/userModel');
+const bcrypt = require("bcrypt");
+const userModel = require("../models/userModel");
+const pool = require("../config/db");
+const fetch = require("node-fetch");
+require("dotenv").config();
 
-exports.register = async (req, res) => {
+const generateOTP = () => Math.floor(100000 + Math.random() * 900000);
+
+// ✅ REGISTER USER
+const register = async (req, res) => {
     const { username, phone, email, password, gender, location } = req.body;
 
     if (!username || !phone || !email || !password || !gender || !location) {
@@ -9,75 +15,171 @@ exports.register = async (req, res) => {
     }
 
     try {
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Register the user in the database
-        userModel.registerUser(username, phone, email, hashedPassword, gender, location, (err, result) => {
-            if (err) {
-                console.error('Registration error:', err);
-                return res.redirect('/register?err=Registration failed');
-            }
-
-            // Redirect to login page after successful registration
-            res.redirect('/login?success=Registration successful');
-        });
+        await userModel.registerUser(username, phone, email, hashedPassword, gender, location);
+        res.redirect('/login?success=Registration successful');
     } catch (error) {
-        console.error('Unexpected error during registration:', error);
-        res.redirect('/register?err=Unexpected error occurred');
+        console.error('Registration error:', error);
+        res.redirect('/register?err=Registration failed');
     }
 };
 
-exports.login = async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.redirect('/login?error=Please provide both email and password');
-    }
-
+// ✅ LOGIN USER
+const login = async (req, res) => {
     try {
-        // Fetch user from the database
-        userModel.getUserByEmail(email, (err, user) => {
-            if (err || !user) {
-                return res.redirect('/login?error=Invalid email or password');
-            }
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.render('login', { error: '❌ Please fill in all fields' });
+        }
 
-            // Compare the provided password with the hashed password
-            const passwordMatch = bcrypt.compareSync(password, user.password);
-            if (!passwordMatch) {
-                return res.redirect('/login?error=Invalid email or password');
-            }
+        const connection = await pool.getConnection();
+        const [users] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
+        connection.release();
 
-            // Store user information in the session
-            req.session.user = {
-                id: user.id,
-                username: user.username,
-                role: user.role, // Ensure role is set as 'admin' for admin users
-                email: user.email,
-                phone: user.phone,
-            };
+        if (users.length === 0) {
+            return res.render('login', { error: '⚠️ User not found' });
+        }
 
-            // Save session and redirect to the dashboard
-            req.session.save((err) => {
-                if (err) {
-                    return res.redirect('/login?error=Session save failed');
-                }
-                res.redirect('/index'); // Redirect to the index page or admin dashboard
-            });
-        });
+        const user = users[0];
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.render('login', { error: '🔑 Incorrect password' });
+        }
+
+        req.session.user = user; // Store user session
+        return res.redirect('/index');
     } catch (error) {
-        console.error('Unexpected error during login:', error);
-        res.redirect('/login?error=Unexpected error occurred');
+        console.error('❌ Login error:', error);
+        res.render('login', { error: '🚨 Internal Server Error' });
     }
 };
 
-exports.logout = (req, res) => {
+// ✅ LOGOUT USER
+const logout = (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             console.error('Session destroy error:', err);
             return res.redirect('/index?error=Logout failed');
         }
-
         res.redirect('/login?success=Logged out successfully');
     });
+};
+
+// ✅ SEND OTP
+const sendOTP = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const otp = generateOTP();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+        const connection = await pool.getConnection();
+        await connection.execute("DELETE FROM otps WHERE email = ?", [email]);
+        await connection.execute("INSERT INTO otps (email, otp, expires_at) VALUES (?, ?, ?)", [email, otp, expiresAt]);
+        connection.release();
+
+        console.log("Generated OTP:", otp);
+        console.log("Sending OTP email to:", email);
+
+        const url = "https://send-bulk-emails.p.rapidapi.com/api/send/otp/mail";
+        const options = {
+            method: "POST",
+            headers: {
+                "x-rapidapi-key": '3eb2c4d26emshdd5551179ad1429p11ea43jsnb3604a12c3a7',
+                "x-rapidapi-host": "send-bulk-emails.p.rapidapi.com",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                subject: "Account OTP",
+                from: "admin@gmail.com",
+                to: email,
+                senders_name: "WanderMind",
+                body: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+            }),
+        };
+
+        const response = await fetch(url, options);
+        const responseData = await response.json();
+        console.log("Email API Response:", responseData);
+
+        if (response.ok) {
+            return res.json({ success: true, redirect: `/reset-password?email=${encodeURIComponent(email)}` });
+        } else {
+            return res.status(500).json({ message: "Failed to send OTP via email" });
+        }
+    } catch (err) {
+        console.error("Send OTP Error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ✅ VERIFY OTP & RESET PASSWORD
+const verifyOTP = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const connection = await pool.getConnection();
+        const [otpRecord] = await connection.execute("SELECT * FROM otps WHERE email = ? AND otp = ?", [email, otp]);
+
+        if (!otpRecord.length || new Date(otpRecord[0].expires_at) < new Date()) {
+            connection.release();
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await connection.execute("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email]);
+        await connection.execute("DELETE FROM otps WHERE email = ?", [email]);
+
+        connection.release();
+
+        res.json({ success: true, redirect: "/login?success=Password updated successfully!" });
+    } catch (err) {
+        console.error("Verify OTP Error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ✅ RESET PASSWORD WITHOUT OTP
+const resetPassword = async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+
+        if (!email || !newPassword) {
+            return res.status(400).json({ message: "Email and new password are required" });
+        }
+
+        const connection = await pool.getConnection();
+        const [users] = await connection.execute("SELECT * FROM users WHERE email = ?", [email]);
+
+        if (!users.length) {
+            connection.release();
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await connection.execute("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email]);
+        connection.release();
+
+        res.json({ success: true, redirect: "/login?success=Password reset successfully!" });
+    } catch (err) {
+        console.error("Reset Password Error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ✅ EXPORT MODULES
+module.exports = {
+    register,
+    login,
+    logout,
+    sendOTP,
+    verifyOTP,
+    resetPassword,
 };

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderMind App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md">
+        <div class="container flex items-center justify-between px-6 py-4 mx-auto">
+            <h1 class="flex items-center text-2xl font-bold text-teal-600">
+                <i data-lucide="compass" class="w-7 h-7 mr-2 text-indigo-600"></i> WanderMind
+            </h1>
+            <div class="flex space-x-6">
+                <a href="/" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="home" class="w-6 h-6 mr-1"></i> Home
+                </a>
+                <a href="/profile" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="user" class="w-6 h-6 mr-1"></i> Profile
+                </a>
+                <a href="/edit-profile" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="settings" class="w-6 h-6 mr-1"></i> Settings
+                </a>
+                <a href="/about" class="flex items-center text-gray-800 hover:text-teal-600">
+                    <i data-lucide="info" class="w-6 h-6 mr-1"></i> About
+                </a>
+                <a href="/login" class="flex items-center text-gray-800 hover:text-red-500">
+                    <i data-lucide="log-out" class="w-6 h-6 mr-1"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="w-full px-8 py-24 mt-16 text-center text-white bg-cover bg-center bg-[url('/images/travel-bg.jpg')]">
+        <h1 class="mb-6 text-5xl font-extrabold">Welcome to <span class="text-yellow-300">WanderMind</span></h1>
+        <p class="text-lg max-w-2xl mx-auto">Your AI-powered smart travel companion that helps you plan, explore, and experience the world effortlessly.</p>
+    </section>
+
+    <!-- Our Vision -->
+    <section class="container p-8 mx-auto bg-white rounded-lg shadow-lg mt-8">
+        <h2 class="mb-6 text-3xl font-bold text-teal-600 text-center">Our Vision</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+            <div class="p-6 bg-gray-100 rounded-lg shadow-md text-center">
+                <h3 class="text-xl font-semibold">🌍 AI-Powered Personalization</h3>
+                <p class="text-gray-600">Tailored travel experiences based on your interests and preferences.</p>
+            </div>
+            <div class="p-6 bg-gray-100 rounded-lg shadow-md text-center">
+                <h3 class="text-xl font-semibold">✈️ Hassle-Free Trip Planning</h3>
+                <p class="text-gray-600">Seamlessly plan, book, and manage your entire journey in one place.</p>
+            </div>
+            <div class="p-6 bg-gray-100 rounded-lg shadow-md text-center">
+                <h3 class="text-xl font-semibold">📡 Real-Time Travel Insights</h3>
+                <p class="text-gray-600">Stay updated with the latest travel trends, alerts, and recommendations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Tips -->
+    <section class="container p-8 mx-auto bg-white rounded-lg shadow-lg mt-8">
+        <h2 class="mb-6 text-3xl font-bold text-teal-600">Travel Tips</h2>
+        <div class="space-y-4">
+            <div class="faq-item">
+                <button class="w-full p-4 text-left bg-gray-200 rounded-lg">❓ Pack Smart & Light</button>
+                <p class="hidden p-4 text-gray-600">Always travel with essential items and avoid overpacking.</p>
+            </div>
+            <div class="faq-item">
+                <button class="w-full p-4 text-left bg-gray-200 rounded-lg">❓ Stay Connected</button>
+                <p class="hidden p-4 text-gray-600">Use travel-friendly SIM cards or portable Wi-Fi hotspots.</p>
+            </div>
+            <div class="faq-item">
+                <button class="w-full p-4 text-left bg-gray-200 rounded-lg">❓ Explore Local Culture</button>
+                <p class="hidden p-4 text-gray-600">Engage with locals, try traditional cuisines, and learn key phrases.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            lucide.createIcons(); // Fix for Lucide icons not appearing
+        });
+
+        gsap.from("h1, h2", {opacity: 0, y: 30, duration: 1, stagger: 0.3});
+        gsap.from("p", {opacity: 0, x: -30, duration: 1, stagger: 0.2});
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-item button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.nextElementSibling.classList.toggle('hidden');
+            });
+        });
+    </script>
+
+</body>
+</html>

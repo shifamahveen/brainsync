@@ -1,25 +1,29 @@
-const db = require('../config/db');
+const pool = require('../config/db');
 
-// Handle profile updates
-exports.updateProfile = (req, res) => {
-    const { username, phone, location, gender } = req.body;
-    const email = req.session.user.email; // Email is assumed to be stored in session
+// Handle Profile Update
+exports.updateProfile = async (req, res) => {
+    try {
+        const { username, phone, location, gender } = req.body;
+        const email = req.session.user?.email;
 
-    // Update user details in the database, excluding email and role
-    const query = "UPDATE users SET username = ?, phone = ?, location = ?, gender = ? WHERE email = ?";
-    db.query(query, [username, phone, location, gender, email], (err) => {
-        if (err) {
-            console.error("Error updating profile:", err);
-            return res.status(500).send("An error occurred while updating profile.");
+        if (!email) {
+            return res.status(401).send("Unauthorized");
         }
 
-        // Update session data
-        req.session.user.username = username;
-        req.session.user.phone = phone;
-        req.session.user.location = location;
-        req.session.user.gender = gender;
+        const connection = await pool.getConnection();
+        await connection.execute(
+            "UPDATE users SET username = ?, phone = ?, location = ?, gender = ? WHERE email = ?",
+            [username, phone, location, gender, email]
+        );
+        connection.release();
 
-        // Redirect to profile page after a successful update
+        // Update session data
+        req.session.user = { ...req.session.user, username, phone, location, gender };
+
         res.redirect('/profile');
-    });
+
+    } catch (error) {
+        console.error("❌ Error updating profile:", error);
+        res.status(500).send("An error occurred while updating profile.");
+    }
 };

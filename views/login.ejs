@@ -6,44 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+       body {
+    background-image: url('https://png.pngtree.com/thumb_back/fh260/back_our/20190619/ourmid/pngtree-travel-around-the-world-travel-poster-template-image_140335.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: fadeBackground 10s infinite alternate;
+}
+
+
+
+
+        @keyframes fadeBackground {
+            0% {
+                filter: brightness(1);
+            }
+            100% {
+                filter: brightness(0.8);
+            }
+        }
+    </style>
 </head>
 
-<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600">
+<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans">
 
-    <h1 class="mb-10 text-5xl font-extrabold text-white">BrainSync Assistant</h1>
+    <h1 id="title" class="mb-10 text-6xl font-extrabold text-black-100 opacity-0">WanderMind Assistant</h1>
 
-    <!-- Error Message -->
-    <% if (typeof error !== 'undefined' && error) { %>
-        <p class="mb-4 text-red-600"><%= error %></p>
-    <% } %>
+    <div id="login-container" class="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-xl opacity-0 scale-90">
+        <!-- Error Message -->
+        <p id="error-message" class="mb-4 text-red-600 hidden"></p>
 
-    <!-- Login Form -->
-    <form action="/login" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-xl">
-        <div>
-            <label for="email" class="text-xl font-semibold text-gray-800">Email</label>
-            <input type="email" name="email" id="email" class="w-full p-4 mt-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="youremail@example.com" required>
-        </div>
-
-        <div>
-            <label for="password" class="text-xl font-semibold text-gray-800">Password</label>
-            <div class="relative">
-                <input type="password" name="password" id="password" class="w-full p-4 mt-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Enter your password" required>
-                <button type="button" onclick="togglePassword()" class="absolute transform -translate-y-1/2 top-1/2 right-3">
-                    <img id="toggle-icon" src="https://img.icons8.com/ios-filled/30/000000/invisible.png" alt="Toggle visibility" />
-                </button>
+        <!-- Login Form -->
+        <form id="login-form" action="/login" method="POST" class="space-y-6">
+            <div>
+                <label for="email" class="text-xl font-semibold text-gray-800">Email</label>
+                <input type="email" name="email" id="email" class="w-full p-4 mt-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="youremail@example.com" required>
             </div>
-        </div>
 
-        <button type="submit" class="w-full py-3 text-white rounded-md bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-teal-500">Login</button>
-    </form>
+            <div>
+                <label for="password" class="text-xl font-semibold text-gray-800">Password</label>
+                <div class="relative">
+                    <input type="password" name="password" id="password" class="w-full p-4 mt-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="Enter your password" required>
+                    <button type="button" onclick="togglePassword()" class="absolute transform -translate-y-1/2 top-1/2 right-3">
+                        <img id="toggle-icon" src="https://img.icons8.com/ios-filled/30/000000/invisible.png" alt="Toggle visibility" />
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 text-black rounded-md bg-gradient-to-r from-pink-500 to-red-600 hover:from-pink-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-pink-500">Login</button>
+            <!-- Forgot Password Link -->
+        <p class="mt-4 text-sm text-center text-gray-600">
+            <a href="/forgot-password" class="text-black font-semibold hover:underline">Forgot Password?</a>
+        </p>
+        </form>
+    </div>
 
     <!-- Register Link with Styling -->
-    <p class="mt-6 text-sm text-center text-gray-600">
-        <span class="text-gray-200">Don't have an account?</span> 
-        <a href="register" class="text-white font-semibold hover:underline">Register here</a>
+    <p class="mt-6 text-sm text-center text-green-900 opacity-100" id="register-text">
+        Don't have an account? <a href="register" class="text-blue-800 font-semibold hover:underline">Register here</a>
     </p>
-
-  
 
     <script>
         // JavaScript to toggle password visibility
@@ -52,12 +76,37 @@
             var toggleIcon = document.getElementById('toggle-icon');
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
-                toggleIcon.src = 'https://img.icons8.com/ios-filled/30/000000/visible.png';  // Eye icon for visible password
+                toggleIcon.src = 'https://img.icons8.com/ios-filled/30/000000/visible.png';
             } else {
                 passwordField.type = 'password';
-                toggleIcon.src = 'https://img.icons8.com/ios-filled/30/000000/invisible.png';  // Eye icon for hidden password
+                toggleIcon.src = 'https://img.icons8.com/ios-filled/30/000000/invisible.png';
             }
         }
+
+        // Animations using Anime.js
+        anime.timeline()
+            .add({
+                targets: '#title',
+                opacity: [0, 1],
+                translateY: [-50, 0],
+                duration: 1000,
+                easing: 'easeOutExpo'
+            })
+            .add({
+                targets: '#login-container',
+                opacity: [0, 1],
+                scale: [0.8, 1],
+                rotate: ['-5deg', '0deg'],
+                duration: 800,
+                easing: 'easeOutElastic(1, .8)'
+            }, '-=500')
+            .add({
+                targets: '#register-text',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 800,
+                easing: 'easeOutExpo'
+            }, '-=400');
     </script>
 
 </body>

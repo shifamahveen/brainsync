@@ -8,6 +8,7 @@ const indexRoutes = require('./routes/indexRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const isAuthenticated = require('./middleware/authMiddleware');
 const adminRoutes = require('./routes/adminRoutes');
+const aboutRoutes = require('./routes/aboutRoutes');
 
 const app = express();
 
@@ -35,7 +36,7 @@ app.use('/', authRoutes);
 app.use('/', indexRoutes);
 app.use('/chat', isAuthenticated, chatRoutes);
 app.use('/admin', isAuthenticated, adminRoutes);
-
+app.use("/", aboutRoutes);
 // Start the Server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

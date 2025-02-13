@@ -1,18 +1,15 @@
-const db = require('../config/db');
+const pool = require('../config/db');
 
-exports.getAllUsers = (req, res) => {
-    // console.log('Session:', req.session.user); // Log session data for debugging
+exports.getAllUsers = async (req, res) => {
+    try {
+        const connection = await pool.getConnection();
+        const [users] = await connection.execute('SELECT id, username, email, location, phone, gender, role FROM users');
+        connection.release();
 
-    // Query the database to fetch all users
-    db.query('SELECT id, username, email, location, phone, gender, role FROM users', (err, results) => {
-        if (err) {
-            console.error('Error fetching users:', err);
-            return res.status(500).send('Internal server error');
-        }
-        
-        // console.log('Fetched users:', results); // Log the fetched users
+        res.render('admin/users', { users, user: req.session.user });
 
-        // Render the users page and pass the users data
-        res.render('admin/users', { users: results, user: req.session.user });
-    });
+    } catch (error) {
+        console.error('❌ Error fetching users:', error);
+        res.status(500).send('Internal server error');
+    }
 };
