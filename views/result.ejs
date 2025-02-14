@@ -3,14 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Plan - WanderMind</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>BrainSync - Meditation Plan</title>
+    <script src="https://kit.fontawesome.com/YOUR_KIT_ID.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        .hidden { display: none; }
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        body {
+            background: url('https://img.freepik.com/free-photo/woman-meditating-nature-sunset-zen-mindfulness-generative-ai_188544-12536.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-gradient-to-r from-blue-400 via-teal-500 to-indigo-600 text-white">
+<body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-opacity-80 fade-in">
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md bg-opacity-90">
@@ -29,55 +54,29 @@
             </div>
         </div>
     </nav>
-    <!-- Travel Itinerary -->
-    <div class="relative z-0 flex flex-col items-center w-11/12 max-w-3xl p-8 mt-20 bg-white rounded-lg shadow-lg text-gray-900">
-        <h1 class="text-3xl font-bold text-teal-600 mb-4">🌍 Your Travel Itinerary</h1>
+
+    <div class="w-full max-w-4xl p-8 mt-20 bg-white bg-opacity-90 rounded-lg shadow-xl transform hover:scale-105 transition duration-500">
+        <h2 class="mb-6 text-3xl font-bold text-center text-gray-900">Your Meditation Plan</h2>
+        <p class="text-lg text-gray-800"><i class="fa-solid fa-heart mr-2"></i> Stress Level: <span class="font-semibold"><%= stressLevel %></span></p>
+        <p class="text-lg text-gray-800"><i class="fa-solid fa-clock mr-2"></i> Preferred Time: <span class="font-semibold"><%= meditationTime %></span></p>
+
+        <h3 class="mt-6 text-xl font-semibold text-gray-900">Recommended Daily Meditation Plan:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Activity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%- meditationPlan %>
+            </tbody>
+        </table>
         
-        <!-- Trip Details -->
-        <div class="w-full text-lg">
-            <p><strong>From:</strong> <%= presentLocation %></p>
-            <p><strong>To:</strong> <%= tourLocation %></p>
-            <p><strong>Budget:</strong> ₹<%= budget %></p>
-            <p><strong>Days:</strong> <%= days %> days</p>
-            <p><strong>Transport:</strong> <%= transport %></p>
-        </div>
-
-        <hr class="w-full my-4 border-gray-300">
-
-        <!-- AI-Generated Travel Plan -->
-        <h2 class="text-2xl font-semibold text-indigo-600 mb-2">📜 Generated Travel Plan</h2>
-        
-        <!-- Collapsible Sections -->
-        <div class="w-full">
-            <div class="bg-gray-100 p-4 rounded-md text-gray-800">
-                <button class="w-full text-left text-lg font-semibold text-teal-600" onclick="toggleSection('planDetails')">📖 View Details ▼</button>
-                <div id="planDetails" class="mt-2 hidden">
-                    <div class="leading-relaxed" id="planContent">
-                        <%- response %>
-                    </div>
-                    <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700" onclick="copyToClipboard()">
-                        📋 Copy Plan
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <a href="/" class="px-6 py-2 mt-6 text-lg font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-700">
-            🔙 Back to Home
+        <a href="/" class="block w-full mt-6 text-center text-white bg-teal-600 py-3 rounded-md hover:bg-teal-700 transition">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
         </a>
     </div>
-
-    <script>
-        function toggleSection(id) {
-            document.getElementById(id).classList.toggle("hidden");
-        }
-
-        function copyToClipboard() {
-            navigator.clipboard.writeText(document.getElementById("planContent").innerText).then(() => {
-                alert("✅ Travel plan copied to clipboard!");
-            });
-        }
-    </script>
 
 </body>
 </html>

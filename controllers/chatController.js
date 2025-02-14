@@ -2,20 +2,18 @@ const fetch = require('node-fetch');
 require('dotenv').config();
 
 const chatController = async (req, res) => {
-    const { presentLocation, tourLocation, budget, days, transport } = req.body;
+    const { stressLevel, meditationTime } = req.body;
 
-    // Validate input fields
-    if (!presentLocation || !tourLocation || !budget || !days || !transport) {
+    if (!stressLevel || !meditationTime) {
         return res.render('index', {
             response: '❌ Please fill in all fields.',
             user: req.session.user || null,
         });
     }
 
-    // Ensure budget and days are positive numbers
-    if (isNaN(budget) || isNaN(days) || budget <= 0 || days <= 0) {
+    if (isNaN(stressLevel) || stressLevel < 1 || stressLevel > 10) {
         return res.render('index', {
-            response: '⚠️ Please enter valid numbers for budget and days.',
+            response: '⚠️ Please enter a valid stress level between 1 and 10.',
             user: req.session.user || null,
         });
     }
@@ -29,17 +27,7 @@ const chatController = async (req, res) => {
     }
 
     const url = 'https://chatgpt4-ai-chatbot.p.rapidapi.com/ask';
-    const query = `
-        I am in ${presentLocation}. I want to visit ${tourLocation} with a budget of ${budget} Rs for ${days} days using ${transport} transport.
-        Provide:
-        - 🏞️ Best places to visit
-        - 🚌 Transport options
-        - 🍽️ Budget-friendly food recommendations
-        - 🏠 Accommodation details
-        - 📅 A detailed daily schedule
-        - 🌟 Hidden gems & local experiences
-        - 💰 Final Budget Summary: Calculate the approximate cost breakdown for food, travel, and accommodation, and display the remaining balance.
-    `;
+    const query = `Give me meditation tips for a person feeling ${stressLevel}/10 stressed in the ${meditationTime}, and provide a week-long meditation plan with exactly 7 days.`;
 
     const options = {
         method: 'POST',
@@ -67,28 +55,19 @@ const chatController = async (req, res) => {
 
         let responseMessage = result.response || result.result || "⚠️ No response from the AI.";
 
-        // Format AI Response to ensure icons remain in the same line as the headings
-        responseMessage = responseMessage
-            .replace(/Best places to visit:/gi, '🏞️ Best Places to Visit:')
-            .replace(/Transport options:/gi, '🚌 **Transport Options:**')
-            .replace(/Budget-friendly food recommendations:/gi, '🍽️ **Food Recommendations:**')
-            .replace(/Accommodation details:/gi, '🏠 **Accommodation Details:**')
-            .replace(/A detailed daily schedule:/gi, '📅 **Daily Schedule:**')
-            .replace(/Hidden gems & local experiences:/gi, '🌟 **Hidden Gems & Local Experiences:**')
-            .replace(/Final Budget Summary:/gi, '💰 **Final Budget Summary:**')
-            .replace(/\d+\./g, "-") // Replace numbered points with dashes for consistency
-            .replace(/•/g, "-") // Replace bullet points with dashes
-            .replace(/\n/g, '<br>') // Ensure new lines are converted to HTML line breaks
-            .replace(/:\s*<br>/g, ":<br>- "); // Ensures dashes align properly under each section
+        // Extract meditation plan
+        const planLines = responseMessage.split('\n').filter(line => line.startsWith('Day '));
+
+        // Format into table rows (limit to 7 days)
+        const formattedPlan = planLines.slice(0, 7).map(day => {
+            const parts = day.split(':');
+            return `<tr><td class="font-semibold">${parts[0]}</td><td>${parts.slice(1).join(':')}</td></tr>`;
+        }).join('');
 
         res.render('result', {
-            response: responseMessage,
-            user: req.session.user || null,
-            presentLocation,
-            tourLocation,
-            budget,
-            days,
-            transport
+            stressLevel,
+            meditationTime,
+            meditationPlan: formattedPlan
         });
 
     } catch (error) {

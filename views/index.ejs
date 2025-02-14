@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderMind App</title>
+    <title>BrainSync</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CDN -->
     <script src="https://kit.fontawesome.com/YOUR_KIT_ID.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
     <style>
         .fade-in {
             animation: fadeIn 1.5s ease-in-out;
@@ -17,21 +17,14 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        .transport-option {
-            @apply flex items-center justify-center w-1/2 py-3 text-white rounded-md transition-transform duration-300;
-        }
-        .transport-option.selected {
-            @apply ring-2 ring-teal-500 scale-105;
-        }
         body {
-            background: url('https://img.freepik.com/free-vector/realistic-travel-background-with-elements_52683-77784.jpg') no-repeat center center fixed;
+            background: url('https://img.freepik.com/free-photo/meditation-concept-calm-mindfulness-serenity_53876-133947.jpg') no-repeat center center fixed;
             background-size: cover;
         }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen py-8 font-sans bg-opacity-80 fade-in">
 
-    <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md bg-opacity-90">
         <div class="container flex items-center justify-between px-6 py-4 mx-auto">
             <h1 class="text-2xl font-bold text-teal-600 flex items-center">
@@ -49,60 +42,29 @@
             </div>
         </div>
     </nav>
-    
-    <!-- Page Content -->
-    <div class="flex flex-col items-center justify-center w-full mt-16 fade-in">
-        <h1 class="mb-10 text-5xl font-extrabold text-white animate-bounce">WanderMind Assistant</h1>
 
-        <!-- Form for input -->
-        <form id="travelForm" action="/index" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white bg-opacity-90 rounded-lg shadow-xl transform hover:scale-105 transition duration-500">
-            
-                <div>
-                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-location-dot mr-2" style="color: #e67e22;"></i> Present Location:</label>
-                    <input type="text" id="presentLocation" name="presentLocation" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div>
-                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-map-location-dot mr-2" style="color: #1abc9c;"></i> Destination:</label>
-                    <input type="text" id="tourLocation" name="tourLocation" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div>
-                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-money-bill-wave mr-2" style="color: #27ae60;"></i> Budget (Rs):</label>
-                    <input type="number" id="budget" name="budget" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div>
-                    <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-calendar-days mr-2" style="color: #8e44ad;"></i> Number of Days:</label>
-                    <input type="number" id="days" name="days" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div>
-                    <label class="text-xl font-semibold text-gray-800">
-                        <i class="fa-solid fa-bus mr-2" style="color: #c0392b;"></i> Transportation:
-                    </label>
-                    <div class="flex space-x-4 mt-2">
-                        <label class="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:scale-105 transition">
-                            <input type="radio" name="transport" value="public" required class="hidden" onclick="selectTransport('public')">
-                            <i class="fa-solid fa-bus"></i> Public
-                        </label>
-                        
-                        <label class="flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer hover:scale-105 transition">
-                            <input type="radio" name="transport" value="private" required class="hidden" onclick="selectTransport('private')">
-                            <i class="fa-solid fa-car"></i> Private
-                        </label>
-                    </div>
-                </div>
-                <button type="submit"  style="border: 1px solid black;" class="w-full py-3 text-blue-800 rounded-md bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-xl hover:scale-105 transition-transform duration-300">
-                    <i class="fa-solid fa-paper-plane mr-2" style="color: #f39c12;"></i> Submit
-                </button>
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-center w-full mt-16 fade-in">
+        <h1 class="mb-10 text-5xl font-extrabold text-white">BrainSync Meditation Guide</h1>
+
+        <!-- Form -->
+        <form id="meditationForm" action="/index" method="POST" class="w-full max-w-lg p-8 space-y-6 bg-white bg-opacity-90 rounded-lg shadow-xl transform hover:scale-105 transition duration-500">
+            <div>
+                <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-heart mr-2"></i> Stress Level (1-10):</label>
+                <input type="number" id="stressLevel" name="stressLevel" min="1" max="10" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
+            </div>
+            <div>
+                <label class="text-xl font-semibold text-gray-800"><i class="fa-solid fa-calendar-days mr-2"></i> Preferred Meditation Time:</label>
+                <select id="meditationTime" name="meditationTime" required class="w-full p-4 mt-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500">
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full py-3 text-white rounded-md bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-xl hover:scale-105 transition duration-300">
+                <i class="fa-solid fa-paper-plane mr-2"></i> Get Meditation Plan
+            </button>
         </form>
     </div>
-
-    <script>
-        function selectTransport(type) {
-            document.getElementById('transport').value = type;
-            document.getElementById('publicBtn').classList.remove('selected');
-            document.getElementById('privateBtn').classList.remove('selected');
-            document.getElementById(type + 'Btn').classList.add('selected');
-        }
-    </script>
-
 </body>
 </html>
