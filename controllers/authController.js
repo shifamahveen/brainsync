@@ -47,7 +47,7 @@ const login = async (req, res) => {
         }
 
         req.session.user = user; // Store user session
-        return res.redirect('/index');
+        return res.redirect('/stress/questionnaire');
     } catch (error) {
         console.error('❌ Login error:', error);
         res.render('login', { error: '🚨 Internal Server Error' });

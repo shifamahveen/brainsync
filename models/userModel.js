@@ -20,7 +20,7 @@ const userModel = {
 
     // Function to register a new user
     registerUser: (username, phone, email, hashedPassword, gender, location, callback) => {
-        const query = 'INSERT INTO users (username, phone, email, password, gender, location) VALUES (?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO users (name, phone, email, password, gender, location) VALUES (?, ?, ?, ?, ?, ?)';
         db.query(query, [username, phone, email, hashedPassword, gender, location], (err, result) => {
             if (err) {
                 console.error('Error registering user:', err);

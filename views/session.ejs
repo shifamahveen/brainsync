@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= sessionTime %> Meditation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/YOUR_KIT_ID.js" crossorigin="anonymous"></script>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-10 w-full bg-white shadow-md bg-opacity-90">
+        <div class="container flex items-center justify-between px-6 py-4 mx-auto">
+            <h1 class="text-2xl font-bold text-teal-600 flex items-center">
+                <i class="fa-solid fa-brain mr-2" style="color: #FF5733;"></i> BrainSync
+            </h1>
+            <div class="space-x-4">
+                <a href="/index" class="text-blue-800 hover:text-teal-600 transition duration-300">
+                    <i class="fa-solid fa-house mr-1" style="color: #3498db;"></i> Home
+                </a>
+                <a href="/profile" class="text-gray-800 hover:text-teal-600 transition duration-300">
+                    <i class="fa-solid fa-user mr-1" style="color: #2ecc71;"></i> Profile
+                </a>
+                <a href="/login" class="text-gray-800 hover:text-teal-600 transition duration-300">
+                    <i class="fa-solid fa-right-from-bracket mr-1" style="color: #e74c3c;"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Session Page Content -->
+    <div class="text-center mt-20">
+        <h1 class="text-4xl font-bold text-teal-600"><%= sessionTime %> Meditation</h1>
+        <p class="text-gray-700 mt-4">Select a song and start your meditation session.</p>
+
+        <!-- Song Selection Dropdown -->
+        <label for="songSelect" class="block mt-6 text-lg font-semibold text-gray-800">Choose a Song:</label>
+        <select id="songSelect" class="mt-2 px-4 py-2 border rounded-md text-gray-800">
+            <% if (sessionTime === 'morning') { %>
+                <option value="/music/morning1.mp3">Morning Song 1</option>
+                <option value="/music/morning2.mp3">Morning Song 2</option>
+                <option value="/music/morning3.mp3">Morning Song 3</option>
+            <% } else if (sessionTime === 'afternoon') { %>
+                <option value="/music/afternoon1.mp3">Afternoon Song 1</option>
+                <option value="/music/afternoon2.mp3">Afternoon Song 2</option>
+                <option value="/music/afternoon3.mp3">Afternoon Song 3</option>
+            <% } else { %>
+                <option value="/music/evening1.mp3">Evening Song 1</option>
+                <option value="/music/evening2.mp3">Evening Song 2</option>
+                <option value="/music/evening3.mp3">Evening Song 3</option>
+            <% } %>
+        </select>
+
+        <!-- Music Player -->
+        <audio id="audioPlayer" controls class="mt-6">
+            <source id="audioSource" src="/music/morning1.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- JavaScript for Changing Song -->
+    <script>
+        document.getElementById('songSelect').addEventListener('change', function() {
+            let audioPlayer = document.getElementById('audioPlayer');
+            let audioSource = document.getElementById('audioSource');
+
+            audioSource.src = this.value;
+            audioPlayer.load();  // Reload audio player to apply new source
+            audioPlayer.play();  // Auto-play the selected song
+        });
+    </script>
+
+</body>
+</html>
