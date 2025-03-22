@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 exports.getAllUsers = async (req, res) => {
+    if(req.session.user.role !== 'admin') {
+        return res.redirect('/');
+    }
+    
     try {
         const connection = await pool.getConnection();
         const [users] = await connection.execute('SELECT id, name, email, location, phone, gender, role FROM users');

@@ -50,24 +50,48 @@ const stressController = {
 
     async submitMCQs(req, res) {
         const { userId, responses } = req.body;
-
-        // Store MCQ responses
+    
+        if (!Array.isArray(responses)) {
+            return res.status(400).send("Invalid responses format.");
+        }
+    
+        const normalizedResponses = responses.map(response => response.toLowerCase());
+    
+        const stressMapping = {
+            'never': 0,
+            'sometimes': 0.333,
+            'often': 0.666,
+            'always': 1
+        };
+    
+        let totalScore = 0;
+        let responseCount = 0;
+    
+        normalizedResponses.forEach(response => {
+            if (stressMapping.hasOwnProperty(response)) {
+                totalScore += stressMapping[response];
+                responseCount++;
+            }
+        });
+    
+        if (responseCount === 0) {
+            return res.status(400).send("No valid responses received.");
+        }
+    
+        const stressLevel = (totalScore / responseCount) * 10;
+    
         await pool.query(
             'INSERT INTO mcq_responses (user_id, responses) VALUES (?, ?)',
             [userId, JSON.stringify(responses)]
         );
-
-        // Calculate stress level
-        const stressLevel = Math.random() * 10; // Placeholder for actual analysis
-
-        // Store stress level
+    
         await pool.query(
             'INSERT INTO stress_levels (user_id, level) VALUES (?, ?)',
             [userId, stressLevel]
         );
-
+    
         res.redirect(`/stress/result?userId=${userId}`);
-    },
+    },      
 
     async getStressResult(req, res) {
         const { userId } = req.query;

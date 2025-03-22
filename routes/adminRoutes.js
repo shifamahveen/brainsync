@@ -5,6 +5,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const isAdminMiddleware = require('../middleware/isAdminMiddleware');
 
 // Admin routes
-router.get('/users', authMiddleware, isAdminMiddleware, adminController.getAllUsers); // Ensure this route is correct
+router.get('/users', authMiddleware, isAdminMiddleware, adminController.getAllUsers); 
 
 module.exports = router;
